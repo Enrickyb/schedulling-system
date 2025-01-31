@@ -2,6 +2,7 @@ package com.example.scheduling.services;
 
 
 import com.example.scheduling.enums.AppointmentStatus;
+import com.example.scheduling.exceptions.InvalidAppointmentException;
 import com.example.scheduling.models.Appointment;
 
 import com.example.scheduling.repositories.AppointmentRepository;
@@ -22,6 +23,9 @@ public class AppointmentService {
 
 
     public Appointment scheduleAppointment(Appointment appointment) {
+        if (appointment.getAppointmentTime().isBefore(LocalDateTime.now())) {
+            throw new InvalidAppointmentException("A data do agendamento deve ser no futuro.");
+        }
         appointment.setStatus(AppointmentStatus.SCHEDULED);
         return appointmentRepository.save(appointment);
     }

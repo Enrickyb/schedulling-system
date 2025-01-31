@@ -1,5 +1,6 @@
 package com.example.scheduling.services;
 
+import com.example.scheduling.exceptions.BusinessNotFoundException;
 import com.example.scheduling.models.Business;
 import com.example.scheduling.repositories.BusinessRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,8 @@ public class BusinessService {
         return businessRepository.findAll();
     }
 
-    public Optional<Business> getBusinessById(UUID businessId) {
-        return businessRepository.findById(businessId);
+    public Business getBusinessById(UUID businessId) {
+        return businessRepository.findById(businessId)
+                .orElseThrow(() -> new BusinessNotFoundException("Negócio com ID " + businessId + " não encontrado."));
     }
 }

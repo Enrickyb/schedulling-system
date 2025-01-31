@@ -56,8 +56,8 @@ public class BusinessController {
 
     @GetMapping("/{businessId}")
     public ResponseEntity<Business> getBusinessById(@PathVariable UUID businessId) {
-        Optional<Business> business = businessService.getBusinessById(businessId);
-        return business.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Business business = businessService.getBusinessById(businessId);
+
+        return ResponseEntity.ok(business);
     }
 }

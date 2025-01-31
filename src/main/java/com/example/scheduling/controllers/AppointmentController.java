@@ -31,7 +31,7 @@ public class AppointmentController {
     @PostMapping
     public ResponseEntity<?> scheduleAppointment(@RequestBody AppointmentDTO appointmentDTO) {
         User customer = userService.getUserById(appointmentDTO.customerId());
-        Business business = businessService.getBusinessById(appointmentDTO.businessId()).orElse(null);
+        Business business = businessService.getBusinessById(appointmentDTO.businessId());
 
         if (customer == null) {
             return ResponseEntity.badRequest().body("Cliente não encontrado.");
