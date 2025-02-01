@@ -7,5 +7,7 @@ public record BusinessDTO(
         String name,
         String description,
         String phone,
-        String address
+        String address,
+        String cnpj,
+        String email
 ) {}

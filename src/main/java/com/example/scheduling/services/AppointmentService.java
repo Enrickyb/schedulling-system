@@ -2,6 +2,7 @@ package com.example.scheduling.services;
 
 
 import com.example.scheduling.enums.AppointmentStatus;
+import com.example.scheduling.enums.UserRole;
 import com.example.scheduling.exceptions.InvalidAppointmentException;
 import com.example.scheduling.models.Appointment;
 
@@ -38,7 +39,7 @@ public class AppointmentService {
         return appointmentRepository.findByCustomerId(customerId);
     }
 
-    public void cancelAppointment(UUID appointmentId) {
+    public void cancelAppointment(UUID appointmentId, UserRole canceledBy, String cancelationReason) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Agendamento não encontrado!"));
 
@@ -48,6 +49,8 @@ public class AppointmentService {
         }
 
         appointment.setStatus(AppointmentStatus.CANCELLED);
+        appointment.setCanceled_by(canceledBy);
+        appointment.setCancelation_reason(cancelationReason);
         appointmentRepository.save(appointment);
     }
 
@@ -58,4 +61,35 @@ public class AppointmentService {
         appointment.setStatus(AppointmentStatus.COMPLETED);
         appointmentRepository.save(appointment);
     }
+
+    public void rescheduleAppointment(UUID appointmentId, LocalDateTime newAppointmentTime) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado!"));
+
+        // 🔹 Só pode reagendar se o status for SCHEDULED
+        if (appointment.getStatus() != AppointmentStatus.SCHEDULED) {
+            throw new RuntimeException("Somente agendamentos com status 'SCHEDULED' podem ser reagendados!");
+        }
+
+        // 🔹 Nova data deve ser no futuro
+        if (newAppointmentTime.isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("A nova data do agendamento deve ser no futuro!");
+        }
+
+        // 🔹 O reagendamento deve ser feito com pelo menos 48 horas de antecedência
+        if (appointment.getAppointmentTime().isBefore(LocalDateTime.now().plusHours(48))) {
+            throw new RuntimeException("Reagendamento permitido apenas com 48h de antecedência!");
+        }
+
+        appointment.setAppointmentTime(newAppointmentTime);
+        appointmentRepository.save(appointment);
+    }
+
+
+    public Appointment getAppointmentById(UUID appointmentId) {
+        return appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado!"));
+
+    }
+
 }

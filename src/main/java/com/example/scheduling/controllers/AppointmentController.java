@@ -1,7 +1,10 @@
 package com.example.scheduling.controllers;
 
 import com.example.scheduling.dto.AppointmentDTO;
+import com.example.scheduling.dto.CancelAppointmentDTO;
+import com.example.scheduling.dto.RescheduleAppointmentDTO;
 import com.example.scheduling.enums.AppointmentStatus;
+import com.example.scheduling.enums.UserRole;
 import com.example.scheduling.models.Appointment;
 import com.example.scheduling.models.Business;
 import com.example.scheduling.models.User;
@@ -63,14 +66,24 @@ public class AppointmentController {
     }
 
     @PutMapping("/cancel/{appointmentId}")
-    public ResponseEntity<String> cancelAppointment(@PathVariable UUID appointmentId) {
+    public ResponseEntity<String> cancelAppointment(@PathVariable UUID appointmentId,  @RequestBody CancelAppointmentDTO request) {
         try {
-            appointmentService.cancelAppointment(appointmentId);
+            appointmentService.cancelAppointment(appointmentId, request.canceledBy(), request.cancelationReason());
             return ResponseEntity.ok("Agendamento cancelado com sucesso!");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PutMapping("/reschedule/{appointmentId}")
+    public ResponseEntity<String> rescheduleAppointment(
+            @PathVariable UUID appointmentId,
+            @RequestBody RescheduleAppointmentDTO request
+    ) {
+        appointmentService.rescheduleAppointment(appointmentId, request.newAppointmentTime());
+        return ResponseEntity.ok("Agendamento reagendado com sucesso!");
+    }
+
 
     @PutMapping("/complete/{appointmentId}")
     public ResponseEntity<String> completeAppointment(@PathVariable UUID appointmentId) {
@@ -80,6 +93,14 @@ public class AppointmentController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+
+    @GetMapping("/{appointmentId}")
+    public ResponseEntity<Appointment> getAppointmentById(@PathVariable UUID appointmentId) {
+        Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+
+        return ResponseEntity.ok(appointment);
     }
 
 }

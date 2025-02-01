@@ -2,8 +2,11 @@ package com.example.scheduling.models;
 
 
 import com.example.scheduling.enums.AppointmentStatus;
+import com.example.scheduling.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -38,46 +41,23 @@ public class Appointment {
     @Column(nullable = false)
     private AppointmentStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    private UserRole canceled_by;
 
-    public UUID getId() {
-        return id;
-    }
+    @Column(nullable = true)
+    private String cancelation_reason;
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+    //created_at
+    @Column(name = "created_at", nullable = true)
+    @CreationTimestamp
+    private LocalDateTime created_at;
 
-    public Business getBusiness() {
-        return business;
-    }
+    //updated_at
+    @Column(name = "updated_at", nullable = true)
+    @UpdateTimestamp
+    private LocalDateTime updated_at;
 
-    public void setBusiness(Business business) {
-        this.business = business;
-    }
-
-    public User getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(User customer) {
-        this.customer = customer;
-    }
-
-    public LocalDateTime getAppointmentTime() {
-        return appointmentTime;
-    }
-
-    public void setAppointmentTime(LocalDateTime appointmentTime) {
-        this.appointmentTime = appointmentTime;
-    }
-
-    public AppointmentStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(AppointmentStatus status) {
-        this.status = status;
-    }
 
 
     @Override
@@ -88,6 +68,10 @@ public class Appointment {
                 ", customer=" + customer +
                 ", appointmentTime=" + appointmentTime +
                 ", status=" + status +
+                ", canceled_by=" + canceled_by +
+                ", cancelation_reason='" + cancelation_reason + '\'' +
+                ", created_at=" + created_at +
+                ", updated_at=" + updated_at +
                 '}';
     }
 }

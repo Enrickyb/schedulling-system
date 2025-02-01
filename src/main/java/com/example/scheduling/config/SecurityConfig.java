@@ -5,6 +5,7 @@ import com.example.scheduling.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -14,7 +15,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -26,13 +29,27 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http, AccessDeniedHandler accessDeniedHandler, AuthenticationEntryPoint authenticationEntryPoint) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // 🔓 Permitir login e registro sem autenticação
+                        .requestMatchers(HttpMethod.POST, "/api/businesses/").hasAnyAuthority("ADMIN", "BUSINESS_OWNER")  // 🔹 Permite GET para todos
+                        .requestMatchers(HttpMethod.GET, "/api/businesses/").hasAuthority("ADMIN")  // 🔹 Permite POST só para ADMIN
+                        .requestMatchers("/api/businesses/owner/**").hasAnyAuthority("BUSINESS_OWNER", "ADMIN")  // 🔹 Permite GET para BUSINESS_OWNER e ADMIN
+                        .requestMatchers(HttpMethod.POST, "/api/appointments/").hasAnyAuthority("CUSTOMER", "ADMIN", "BUSINESS_OWNER")  // 🔹 Permite POST para todos
+                        .requestMatchers(HttpMethod.GET, "/api/appointments/").hasAnyAuthority("CUSTOMER", "ADMIN", "BUSINESS_OWNER") // 🔹 Permite GET para todos
+                        .requestMatchers("/api/appointments/business/**").hasAnyAuthority("BUSINESS_OWNER", "ADMIN")
+                        .requestMatchers("/api/appointments/customer/**").hasAnyAuthority("CUSTOMER", "ADMIN")
+                        .requestMatchers("/api/appointments/cancel/**").hasAnyAuthority("BUSINESS_OWNER", "ADMIN", "CUSTOMER")
+                        .requestMatchers("/api/appointments/complete/**").hasAnyAuthority("BUSINESS_OWNER", "ADMIN")
+                        .requestMatchers("/api/guest").hasAnyAuthority("BUSINESS_OWNER", "ADMIN")
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler(accessDeniedHandler)  // 🔹 Personaliza resposta de 403 (Forbidden)
+                        .authenticationEntryPoint(authenticationEntryPoint)  // 🔹 Personaliza resposta de 401 (Unauthorized)
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

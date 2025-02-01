@@ -43,6 +43,8 @@ public class BusinessController {
                 .description(businessDTO.description())
                 .phone(businessDTO.phone())
                 .address(businessDTO.address())
+                .cnpj(businessDTO.cnpj())
+                .email(businessDTO.email())
                 .build();
 
         return ResponseEntity.ok(businessService.createBusiness(business));
@@ -52,6 +54,11 @@ public class BusinessController {
     @GetMapping
     public ResponseEntity<List<Business>> getAllBusinesses() {
         return ResponseEntity.ok(businessService.getAllBusinesses());
+    }
+
+    @GetMapping("/owner/{ownerId}")
+    public ResponseEntity<List<Business>> getBusinessesByOwner(@PathVariable UUID ownerId) {
+        return ResponseEntity.ok(businessService.getBusinessesByOwner(ownerId));
     }
 
     @GetMapping("/{businessId}")
