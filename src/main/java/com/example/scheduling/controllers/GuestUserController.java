@@ -6,10 +6,9 @@ import com.example.scheduling.models.GuestUser;
 import com.example.scheduling.services.BusinessService;
 import com.example.scheduling.services.GuestUserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/guest")
@@ -48,7 +47,7 @@ public class GuestUserController {
                 .email(guestUserDTO.email())
                 .address(guestUserDTO.address())
                 .cpf(guestUserDTO.cpf())
-                .created_by(business)
+                .createdBy(business)
                 .phone(guestUserDTO.phone())
                 .build();
 
@@ -56,6 +55,30 @@ public class GuestUserController {
 
 
 
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllGuestUsers() {
+        return ResponseEntity.ok(guestUserService.getAllGuestUsers());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getGuestUserById(UUID id) {
+        return ResponseEntity.ok(guestUserService.getGuestUserById(id));
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateGuestUserById(UUID id, GuestUserDTO guestUserDTO) {
+        return ResponseEntity.ok(guestUserService.updateGuestUser(id, guestUserDTO));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteGuestUserById(UUID id) {
+        return ResponseEntity.ok(guestUserService.deleteGuestUser(id));
+    }
+
+    @GetMapping("/business/{business_id}")
+    public ResponseEntity<?> getGuestUserByBusinessId(@PathVariable UUID business_id) {
+        return ResponseEntity.ok(guestUserService.getGuestUserByBusiness(business_id));
     }
 
 

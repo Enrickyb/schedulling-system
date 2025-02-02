@@ -39,7 +39,7 @@ public class GuestUser {
 
     @ManyToOne
     @JoinColumn(name = "business_id", nullable = false)
-    private Business created_by;
+    private Business createdBy;
 
     //created_at
     @Column(name = "created_at", nullable = false)
@@ -62,7 +62,7 @@ public class GuestUser {
                 ", cpf='" + cpf + '\'' +
                 ", phone='" + phone + '\'' +
                 ", address='" + address + '\'' +
-                ", created_by=" + created_by +
+                ", created_by=" + createdBy +
                 ", created_at=" + created_at +
                 ", updated_at=" + updated_at +
                 '}';

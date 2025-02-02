@@ -45,6 +45,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/appointments/cancel/**").hasAnyAuthority("BUSINESS_OWNER", "ADMIN", "CUSTOMER")
                         .requestMatchers("/api/appointments/complete/**").hasAnyAuthority("BUSINESS_OWNER", "ADMIN")
                         .requestMatchers("/api/guest").hasAnyAuthority("BUSINESS_OWNER", "ADMIN")
+                        .requestMatchers("/api/guest/all").hasAnyAuthority("BUSINESS_OWNER", "ADMIN")
+                        .requestMatchers("/api/guest/**").hasAnyAuthority("BUSINESS_OWNER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
