@@ -43,20 +43,32 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Agendamento não encontrado!"));
 
-        if (appointment.getAppointmentTime().isBefore(LocalDateTime.now().plusHours(48))) {
+        //verificar se o agendamento ja foi concluido ou cancelado
+        if (appointment.getStatus() == AppointmentStatus.COMPLETED || appointment.getStatus() == AppointmentStatus.CANCELLED) {
+            throw new RuntimeException("Agendamento já foi concluído ou cancelado!");
+        }
+
+
+
+        if (appointment.getAppointmentTime().isBefore(LocalDateTime.now().plusHours(24))) {
             System.out.println(appointment.getAppointmentTime());
             throw new RuntimeException("Cancelamento permitido apenas com 48h de antecedência! agendado:" + appointment.getAppointmentTime() + " local: " + LocalDateTime.now());
         }
 
         appointment.setStatus(AppointmentStatus.CANCELLED);
-        appointment.setCanceled_by(canceledBy);
-        appointment.setCancelation_reason(cancelationReason);
+        appointment.setCanceledBy(canceledBy);
+        appointment.setCancelationReason(cancelationReason);
         appointmentRepository.save(appointment);
     }
 
     public void completeAppointment(UUID appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Agendamento não encontrado!"));
+
+        // 🔹 Só pode completar se o status for SCHEDULED
+        if (appointment.getStatus() != AppointmentStatus.SCHEDULED) {
+            throw new RuntimeException("Agendamento já concluido ou cancelado!");
+        }
 
         appointment.setStatus(AppointmentStatus.COMPLETED);
         appointmentRepository.save(appointment);
@@ -76,8 +88,8 @@ public class AppointmentService {
             throw new RuntimeException("A nova data do agendamento deve ser no futuro!");
         }
 
-        // 🔹 O reagendamento deve ser feito com pelo menos 48 horas de antecedência
-        if (appointment.getAppointmentTime().isBefore(LocalDateTime.now().plusHours(48))) {
+        // 🔹 O reagendamento deve ser feito com pelo menos 24 horas de antecedência
+        if (appointment.getAppointmentTime().isBefore(LocalDateTime.now().plusHours(24))) {
             throw new RuntimeException("Reagendamento permitido apenas com 48h de antecedência!");
         }
 

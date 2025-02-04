@@ -1,6 +1,7 @@
 package com.example.scheduling.controllers;
 
 import com.example.scheduling.dto.BusinessDTO;
+import com.example.scheduling.dto.BusinessResponseDTO;
 import com.example.scheduling.models.Business;
 import com.example.scheduling.models.User;
 import com.example.scheduling.services.BusinessService;
@@ -52,19 +53,24 @@ public class BusinessController {
 
 
     @GetMapping
-    public ResponseEntity<List<Business>> getAllBusinesses() {
-        return ResponseEntity.ok(businessService.getAllBusinesses());
+    public ResponseEntity<List<BusinessResponseDTO>> getAllBusinesses() {
+        List<Business> business = businessService.getAllBusinesses();
+        return ResponseEntity.ok(business.stream().map(BusinessResponseDTO::fromEntity).toList());
     }
 
     @GetMapping("/owner/{ownerId}")
-    public ResponseEntity<List<Business>> getBusinessesByOwner(@PathVariable UUID ownerId) {
-        return ResponseEntity.ok(businessService.getBusinessesByOwner(ownerId));
+    public ResponseEntity<List<BusinessResponseDTO>> getBusinessesByOwner(@PathVariable UUID ownerId) {
+        List<Business> businesses = businessService.getBusinessesByOwner(ownerId);
+        return ResponseEntity.ok(businesses.stream().map(BusinessResponseDTO::fromEntity).toList());
     }
 
     @GetMapping("/{businessId}")
-    public ResponseEntity<Business> getBusinessById(@PathVariable UUID businessId) {
+    public ResponseEntity<BusinessResponseDTO> getBusinessById(@PathVariable UUID businessId) {
         Business business = businessService.getBusinessById(businessId);
 
-        return ResponseEntity.ok(business);
+        return Optional.ofNullable(business)
+                .map(BusinessResponseDTO::fromEntity)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

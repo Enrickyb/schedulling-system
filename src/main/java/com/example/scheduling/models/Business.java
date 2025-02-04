@@ -6,6 +6,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -27,6 +30,7 @@ public class Business {
     @Column(nullable = false, unique = true)
     private String name;
 
+
     private String description;
 
     @Column(nullable = false)
@@ -40,6 +44,9 @@ public class Business {
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Services> services = new HashSet<>();
 
     //created_at
     @Column(name = "created_at", nullable = false)
