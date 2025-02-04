@@ -6,7 +6,7 @@ import java.util.UUID;
 public record AppointmentDTO(
         UUID businessId,
         UUID customerId,
-        String service,
+        UUID serviceId,
         LocalDateTime appointmentTime
 ) {
 

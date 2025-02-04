@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -31,8 +32,6 @@ public class Appointment {
     @JoinColumn(name = "customer_id", nullable = false)
     private User customer;
 
-    @Column(nullable = false)
-    private String service;
 
     @Column(nullable = false)
     private LocalDateTime appointmentTime;
@@ -43,10 +42,16 @@ public class Appointment {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = true)
-    private UserRole canceled_by;
+    private UserRole canceledBy;
 
     @Column(nullable = true)
-    private String cancelation_reason;
+    private String cancelationReason;
+
+
+    @ManyToOne
+    @JoinColumn(name = "service_id", nullable = false) // 🔹 Um Appointment tem apenas UM Service
+    private Services service;
+
 
     //created_at
     @Column(name = "created_at", nullable = true)
@@ -68,8 +73,8 @@ public class Appointment {
                 ", customer=" + customer +
                 ", appointmentTime=" + appointmentTime +
                 ", status=" + status +
-                ", canceled_by=" + canceled_by +
-                ", cancelation_reason='" + cancelation_reason + '\'' +
+                ", canceled_by=" + canceledBy +
+                ", cancelation_reason='" + cancelationReason + '\'' +
                 ", created_at=" + created_at +
                 ", updated_at=" + updated_at +
                 '}';
