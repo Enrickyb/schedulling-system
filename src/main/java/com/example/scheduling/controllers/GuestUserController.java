@@ -26,7 +26,9 @@ public class GuestUserController {
     @PostMapping
     public ResponseEntity<?> createGuestUser(@RequestBody GuestUserDTO guestUserDTO) {
 
-        if(guestUserDTO.name() == null || guestUserDTO.email() == null || guestUserDTO.phone() == null) {
+        System.out.println(guestUserDTO);
+
+        if(guestUserDTO.name() == null || guestUserDTO.email() == null || guestUserDTO.phone() == null || guestUserDTO.cpf() == null) {
             throw new IllegalArgumentException("Name, email and phone are required.");
         }
 
@@ -51,7 +53,15 @@ public class GuestUserController {
                 .phone(guestUserDTO.phone())
                 .build();
 
-        return ResponseEntity.ok(guestUserService.registerGuestUser(guestUser));
+
+        GuestUser createdGuestUser = guestUserService.registerGuestUser(guestUser);
+
+        //remove created_by from response
+        createdGuestUser.setCreatedBy(null);
+
+
+
+        return ResponseEntity.ok(createdGuestUser);
 
 
 

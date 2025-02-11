@@ -6,24 +6,46 @@ import com.example.scheduling.enums.UserRole;
 import com.example.scheduling.exceptions.InvalidAppointmentException;
 import com.example.scheduling.models.Appointment;
 
+import com.example.scheduling.models.BusinessSettings;
 import com.example.scheduling.repositories.AppointmentRepository;
+import com.example.scheduling.repositories.BusinessSettingsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
+    private final BusinessSettingsRepository businessSettingsRepository;
 
-    public AppointmentService(AppointmentRepository appointmentRepository) { // Construtor manual
+    public AppointmentService(AppointmentRepository appointmentRepository, BusinessSettingsRepository businessSettingsRepository) { // Construtor manual
         this.appointmentRepository = appointmentRepository;
+        this.businessSettingsRepository = businessSettingsRepository;
     }
 
 
     public Appointment scheduleAppointment(Appointment appointment) {
+        BusinessSettings settings = businessSettingsRepository.findByBusinessId(appointment.getBusiness().getId())
+                .orElseThrow(() -> new RuntimeException("Configurações do negócio não encontradas"));
+
+        // 🔹 Verificar horário de funcionamento
+        LocalTime appointmentTime = appointment.getAppointmentTime().toLocalTime();
+        if (appointmentTime.isBefore(settings.getOpeningTime()) || appointmentTime.isAfter(settings.getClosingTime())) {
+            throw new RuntimeException("Agendamento fora do horário de funcionamento da empresa.");
+        }
+
+
+        // 🔹 Marcar como "PENDENTE" caso precise de aprovação
+        if (settings.isRequireApproval()) {
+            appointment.setStatus(AppointmentStatus.PENDING);
+        } else {
+            appointment.setStatus(AppointmentStatus.SCHEDULED);
+        }
+
         if (appointment.getAppointmentTime().isBefore(LocalDateTime.now())) {
             throw new InvalidAppointmentException("A data do agendamento deve ser no futuro.");
         }

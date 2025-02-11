@@ -66,7 +66,8 @@ public class ServiceController {
 
 
     @GetMapping("/business/{businessId}")
-    public ResponseEntity<List<Services>> getServicesByBusiness(@PathVariable UUID businessId) {
-        return ResponseEntity.ok(servicesService.getServicesByBusiness(businessId));
+    public ResponseEntity<List<ServiceDTO>> getServicesByBusiness(@PathVariable UUID businessId) {
+        List<Services> services = servicesService.getServicesByBusiness(businessId);
+        return ResponseEntity.ok(services.stream().map(ServiceDTO::fromEntity).toList());
     }
 }

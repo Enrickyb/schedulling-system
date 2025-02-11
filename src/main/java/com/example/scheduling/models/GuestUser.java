@@ -31,7 +31,7 @@ public class GuestUser {
     @Column(nullable = false)
     private String cpf;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String phone;
 
     @Column(nullable = true)

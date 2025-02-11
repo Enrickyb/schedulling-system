@@ -57,6 +57,8 @@ public class User implements UserDetails {
         return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
     }
 
+
+
     @Override
     public String getPassword() {
         return passwordHash;  // Retorne a senha hashada

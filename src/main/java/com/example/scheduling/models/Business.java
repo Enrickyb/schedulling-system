@@ -23,6 +23,9 @@ public class Business {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @OneToOne(mappedBy = "business", cascade = CascadeType.ALL, orphanRemoval = true)
+    private BusinessSettings settings;
+
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;

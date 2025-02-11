@@ -15,15 +15,23 @@ import java.util.UUID;
 public class BusinessService {
     private final BusinessRepository businessRepository;
     private final UserService userService;
+    private final BusinessSettingsService businessSettingsService;
 
-    public BusinessService(BusinessRepository businessRepository, UserService userService) { // Construtor manual
+
+
+    public BusinessService(BusinessRepository businessRepository, UserService userService, BusinessSettingsService businessSettingsService) { // Construtor manual
         this.businessRepository = businessRepository;
         this.userService = userService;
+        this.businessSettingsService = businessSettingsService;
     }
 
     public Business createBusiness(Business business) {
-        return businessRepository.save(business);
+        Business savedBusiness = businessRepository.save(business);
+        businessSettingsService.createDefaultSettings(savedBusiness);
+        return savedBusiness;
     }
+
+
 
     public List<Business> getAllBusinesses() {
         return businessRepository.findAll();
@@ -35,7 +43,6 @@ public class BusinessService {
     }
 
     public List<Business> getBusinessesByOwner(UUID ownerId) {
-
 
         return businessRepository.findByOwnerId(ownerId)
                 .orElseThrow(() -> new BusinessNotFoundException("Negócio com ID do dono " + ownerId + " não encontrado."));
