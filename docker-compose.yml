@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: secret
     ports:
-      - "5252:5432"
+      - "5253:5432"
 
   api:
     build: .

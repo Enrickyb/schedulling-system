@@ -1,14 +1,17 @@
 package com.example.scheduling.services;
 
 import com.example.scheduling.enums.ServiceStatus;
+import com.example.scheduling.models.Appointment;
 import com.example.scheduling.models.Business;
 import com.example.scheduling.models.Services;
+import com.example.scheduling.repositories.AppointmentRepository;
 import com.example.scheduling.repositories.BusinessRepository;
 import com.example.scheduling.repositories.ServicesRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -20,13 +23,14 @@ public class ServicesService {
 
     private final ServicesRepository servicesRepository;
     private final BusinessRepository businessRepository;
+    private final AppointmentRepository appointmentRepository;
 
     public List<Services> getAllServices() {
-        return servicesRepository.findAll();
+        return servicesRepository.findAllNonDeleted();
     }
 
     public Services getServiceById(UUID id) {
-        return servicesRepository.findById(id)
+        return servicesRepository.findNonDeletedById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Serviço não encontrado!"));
     }
 
@@ -56,8 +60,8 @@ public class ServicesService {
     }
 
     public void deleteService(UUID id) {
-        Services service = getServiceById(id);
-        servicesRepository.delete(service);
+
+        servicesRepository.softDeleteById(id);
     }
 
 
@@ -78,4 +82,8 @@ public class ServicesService {
     public List<Services> getServicesByBusiness(UUID businessId) {
         return servicesRepository.findByBusinessId(businessId);
     }
+
+
+
+
 }

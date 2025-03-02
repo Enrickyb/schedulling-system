@@ -70,4 +70,6 @@ public class ServiceController {
         List<Services> services = servicesService.getServicesByBusiness(businessId);
         return ResponseEntity.ok(services.stream().map(ServiceDTO::fromEntity).toList());
     }
+
+
 }

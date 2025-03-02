@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -40,6 +41,15 @@ public class GuestUser {
     @ManyToOne
     @JoinColumn(name = "business_id", nullable = false)
     private Business createdBy;
+
+
+    @Column(name = "is_deleted", nullable = true)
+    private Integer isDeleted = 0;
+
+    @Column(name = "deleted_at", nullable = true)
+    @UpdateTimestamp
+    private Timestamp deletedAt;
+
 
     //created_at
     @Column(name = "created_at", nullable = false)

@@ -33,5 +33,26 @@ public class BusinessSettings {
 
     @Column(nullable = false)
     private boolean requireApproval = false;  // ✅ Se precisa de aprovação antes de confirmar um agendamento
+
+    //logo de perfil da empresa
+    @Column(nullable = true)
+    private String logo_url;
+
+    //cor de primaria da empresa
+    @Column(nullable = true)
+    private String primary_color;
+
+    //cor de secundaria da empresa
+    @Column(nullable = true)
+    private String secondary_color;
+
+    //cor de terciaria da empresa
+    @Column(nullable = true)
+    private String tertiary_color;
+
+
+
+
+
 }
 

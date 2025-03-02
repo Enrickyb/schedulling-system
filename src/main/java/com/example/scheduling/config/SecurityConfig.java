@@ -38,8 +38,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // 🔓 Permitir login e registro sem autenticação
-                        .requestMatchers(HttpMethod.POST, "/api/businesses/").hasAnyAuthority("ADMIN", "BUSINESS_OWNER")  // 🔹 Permite GET para todos
-                        .requestMatchers(HttpMethod.GET, "/api/businesses/").hasAuthority("ADMIN")  // 🔹 Permite POST só para ADMIN
+                        .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/businesses").hasAnyAuthority("ADMIN", "BUSINESS_OWNER")  // 🔹 Permite GET para todos
+                        .requestMatchers(HttpMethod.GET, "/api/businesses").permitAll() // 🔹
                         .requestMatchers(HttpMethod.GET, "/api/businesses/**").permitAll()  // 🔹 Permite GET para todos
                         .requestMatchers("/api/businesses/owner/**").hasAnyAuthority("BUSINESS_OWNER", "ADMIN")  // 🔹 Permite GET para BUSINESS_OWNER e ADMIN
                         .requestMatchers(HttpMethod.POST, "/api/appointments").permitAll()  // 🔹 Permite POST para todos
@@ -53,8 +54,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/guest/**").permitAll()
                         .requestMatchers("/api/business-settings/**").hasAnyAuthority("BUSINESS_OWNER", "ADMIN")
                         .requestMatchers("/api/services/business/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/services/**").hasAnyAuthority("BUSINESS_OWNER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/services/**").hasAnyAuthority("BUSINESS_OWNER", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/services/**").hasAnyAuthority("BUSINESS_OWNER", "ADMIN")
+                        .requestMatchers("/api/available/**/**").permitAll()
 
                 )
                 .exceptionHandling(ex -> ex
