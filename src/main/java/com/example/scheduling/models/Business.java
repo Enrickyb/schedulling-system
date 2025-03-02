@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,9 @@ public class Business {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @OneToOne(mappedBy = "business", cascade = CascadeType.ALL, orphanRemoval = true)
+    private BusinessSettings settings;
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
@@ -47,6 +51,14 @@ public class Business {
 
     @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Services> services = new HashSet<>();
+
+    @Column(name = "is_deleted", nullable = true)
+    private Integer isDeleted = 0;
+
+    @Column(name = "deleted_at", nullable = true)
+    @UpdateTimestamp
+    private Timestamp deletedAt;
+
 
     //created_at
     @Column(name = "created_at", nullable = false)

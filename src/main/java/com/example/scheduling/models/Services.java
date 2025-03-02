@@ -44,10 +44,17 @@ public class Services {
 
 
     @Enumerated(EnumType.STRING)
-    private ServiceType type; // enum with values: SERVICE, PRODUCT, PACKAGE
+    private ServiceType type = ServiceType.SERVICE; // enum with values: SERVICE, PRODUCT, PACKAGE
 
     @Enumerated(EnumType.STRING)
-    private ServiceStatus status; // enum with values: ACTIVE, INACTIVE
+    private ServiceStatus status = ServiceStatus.ACTIVE; // enum with values: ACTIVE, INACTIVE
+
+    @Column(name = "is_deleted", nullable = true)
+    private Integer isDeleted = 0;
+
+    @Column(name = "deleted_at", nullable = true)
+    @UpdateTimestamp
+    private Timestamp deletedAt;
 
     //created_at
     @Column(name = "created_at", nullable = false)

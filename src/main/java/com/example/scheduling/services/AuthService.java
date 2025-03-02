@@ -69,7 +69,7 @@ public class AuthService {
             // Gera o token JWT
             String token = jwtUtil.generateToken(user);
 
-            return new AuthResponseDTO(token, user.getId(), user.getUsername(), user.getEmail(), user.getRole(), user.getAddress(), user.getPhone());
+            return new AuthResponseDTO(token, user.getId(), user.getName(), user.getEmail(), user.getRole(), user.getAddress(), user.getPhone());
 
         }
         catch (Exception e){
