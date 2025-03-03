@@ -1,6 +1,7 @@
 package com.example.scheduling.models;
 
 
+import com.example.scheduling.dto.AppointmentDTO;
 import com.example.scheduling.enums.AppointmentStatus;
 import com.example.scheduling.enums.UserRole;
 import jakarta.persistence.*;
@@ -70,6 +71,7 @@ public class Appointment {
     @Column(name = "updated_at", nullable = true)
     @UpdateTimestamp
     private LocalDateTime updated_at;
+
 
 
 

@@ -1,5 +1,6 @@
 package com.example.scheduling.models;
 
+import com.example.scheduling.dto.AuthDTO;
 import com.example.scheduling.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
@@ -49,6 +50,15 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime updated_at;
 
+    public User(AuthDTO data) {
+        this.email = data.email();
+        this.name = data.name();
+        this.passwordHash = data.password();
+        this.phone = data.phone();
+        this.address = data.address();
+
+        this.role = UserRole.CUSTOMER;
+    }
 
 
     @Override

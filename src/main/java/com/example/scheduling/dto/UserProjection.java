@@ -3,9 +3,18 @@ package com.example.scheduling.dto;
 
 import com.example.scheduling.models.User;
 
+import java.util.UUID;
+
 public interface UserProjection {
     static UserProjection fromEntity(User customer) {
         return new UserProjection() {
+
+            @Override
+            public UUID getId() {
+                return customer.getId();
+            }
+
+
             @Override
             public String getEmail() {
                 return customer.getEmail();
@@ -32,4 +41,6 @@ public interface UserProjection {
     String getName();
     String getPhone();
     String getAddress();
+
+    UUID getId();
 }
