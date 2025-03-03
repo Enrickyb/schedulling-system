@@ -57,7 +57,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/services/**").hasAnyAuthority("BUSINESS_OWNER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/services/**").hasAnyAuthority("BUSINESS_OWNER", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/services/**").hasAnyAuthority("BUSINESS_OWNER", "ADMIN")
-                        .requestMatchers("/api/available/**/**").permitAll()
+                        .requestMatchers("api/services/available-times").permitAll()
 
                 )
                 .exceptionHandling(ex -> ex
