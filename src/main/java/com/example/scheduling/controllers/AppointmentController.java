@@ -111,12 +111,13 @@ public class AppointmentController {
         }
     }
 
-
     @GetMapping("/{appointmentId}")
     public ResponseEntity<AppointmentResponseDTO> getAppointmentById(@PathVariable UUID appointmentId) {
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
 
         return ResponseEntity.ok(AppointmentResponseDTO.fromEntity(appointment));
     }
+
+
 
 }

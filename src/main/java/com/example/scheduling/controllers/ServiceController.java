@@ -1,5 +1,6 @@
 package com.example.scheduling.controllers;
 
+import com.example.scheduling.dto.AvailableTimesRequestDTO;
 import com.example.scheduling.dto.ServiceDTO;
 import com.example.scheduling.models.Services;
 import com.example.scheduling.services.ServicesService;
@@ -70,6 +71,22 @@ public class ServiceController {
         List<Services> services = servicesService.getServicesByBusiness(businessId);
         return ResponseEntity.ok(services.stream().map(ServiceDTO::fromEntity).toList());
     }
+
+    //getAvailableTimesByServiceByBusinessByDate
+    @PostMapping("/available-times")
+    public ResponseEntity<Set<String>> getAvailableTimesByServiceByBusinessByDate(
+            @RequestBody AvailableTimesRequestDTO request
+    ) {
+        return ResponseEntity.ok(
+                servicesService.getAvailableTimesByServiceByBusinessByDate(
+                        request.getServiceId(),
+                        request.getBusinessId(),
+                        request.getDate()
+                )
+        );
+    }
+
+
 
 
 }
